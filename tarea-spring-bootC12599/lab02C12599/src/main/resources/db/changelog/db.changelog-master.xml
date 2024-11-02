@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <!-- Create tables -->
+    <changeSet id="1" author="c12599">
+        <sqlFile path="db/changelog/001-create-room-table.sql"/>
+    </changeSet>
+
+    <changeSet id="2" author="c12599">
+        <sqlFile path="db/changelog/002-create-users-table.sql"/>
+    </changeSet>
+
+    <changeSet id="3" author="c12599">
+        <sqlFile path="db/changelog/003-create-messages-table.sql"/>
+    </changeSet>
+</databaseChangeLog>
