@@ -1,10 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import { useApiHandler } from '../../hooks/useApiHandlers';
+import useNotificationHandler from '../../hooks/useNotificationHandler';
 import { RegisterUserRequest } from '../../models/users.models';
 import { registerUser } from '../../services/users.service';
 import { RegisterUserForm } from './types';
 
 export const useDependencies = () => {
 	const { handleMutation } = useApiHandler();
+	const { setErrorNotificaiton } = useNotificationHandler();
+	const navigate = useNavigate();
 	const initialValues = {
 		name: '',
 		email: '',
@@ -45,15 +49,17 @@ export const useDependencies = () => {
 		}
 
 		const request: RegisterUserRequest = {
-			user: parms.name,
+			name: parms.name,
 			email: parms.email,
 			password: parms.password,
 		};
 		const { isError, message } = await handleMutation(registerUser, request);
 
 		if (isError) {
-			console.log(message);
+			setErrorNotificaiton(message);
 			return;
+		} else {
+			navigate('/Login');
 		}
 		console.log(`${parms.name} ${parms.email} ${parms.password}`);
 	};
@@ -64,3 +70,6 @@ export const useDependencies = () => {
 		rules,
 	};
 };
+
+
+export default useNotificationHandler;

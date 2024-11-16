@@ -1,52 +1,51 @@
-import React, { useEffect, ReactNode } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React, { useMemo } from 'react';
 import RegisterUser from './pages/RegisterUser';
 import Login from './pages/Login/Login';
-import Main from './pages/Login/Main';
+import { Main } from './pages/Main';
 import { useSessionHandler } from './hooks/useSessionHandler';
+import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
+import Home from './pages/Home';
 
-type CustomErrorBoundaryProps = {
-  children: ReactNode;
+const publicRoute = () => {
+	return (
+		<Routes>
+			<Route path='/' element={<Main />}>
+				<Route index element={<Login />} />
+				<Route path='Register' element={<RegisterUser />} />
+				<Route path='Login' element={<Login />} />
+			</Route>
+		</Routes>
+	);
 };
-
-const CustomErrorBoundary: React.FC<CustomErrorBoundaryProps> = ({ children }) => {
-  return (
-    <div>
-      <h1>An unknown error occurred</h1>
-      <p>Something went wrong, please contact an administrator.</p>
-      {children}
-    </div>
-  );
-};
-
-const PublicRoute = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Main />}>
-        <Route index element={<Login />} />
-        <Route path="register" element={<RegisterUser />} />
-        <Route path="login" element={<Login />} />
-      </Route>
-    </Routes>
-  );
+const privateRoute = () => {
+	return (
+		<Routes>
+			<Route path='/' element={<Main />}>
+				<Route index element={<Home />} />
+			</Route>
+		</Routes>
+	);
 };
 
 const Application = () => {
-  const { sessionContext, loadSessionFromToken } = useSessionHandler();
+	const { sessionContext, loadSessionFromToken } = useSessionHandler();
+	useMemo(() => {
+		if (sessionContext == null) {
+			loadSessionFromToken();
+		}
+	}, []);
 
-  useEffect(() => {
-    if (sessionContext == null) {
-      loadSessionFromToken();
-    }
-  }, [sessionContext, loadSessionFromToken]);
-
-  return (
-    <CustomErrorBoundary>
-      <BrowserRouter>
-        <PublicRoute />
-      </BrowserRouter>
-    </CustomErrorBoundary>
-  );
+	return (
+		<ErrorBoundary
+			description='Something when wrong, please contact an administrator'
+			message='An unknown error ocurrs'
+		>
+			<BrowserRouter>
+				{sessionContext == null ? publicRoute() : privateRoute()}
+			</BrowserRouter>
+		</ErrorBoundary>
+	);
 };
 
 export default Application;

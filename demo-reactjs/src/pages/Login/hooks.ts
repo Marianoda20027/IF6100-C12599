@@ -1,19 +1,21 @@
-import { login } from '../../services/users.service';
+
 //import { validationSchema } from '@/utils/forms.util';
 //import { useNavigate } from 'react-router-dom';
-import { useApiHandler } from '../../hooks/useApiHandlers';
 import { useSessionHandler } from '../../hooks/useSessionHandler';
 import { LoginForm } from './type';
 import {
 	AuthenticationInput,
 	AuthenticationResponse,
 } from '../../models/users.models';
+import { login } from '../../services/users.service';
+import { useApiHandler } from '../../hooks/useApiHandlers';
+import { useNavigate } from 'react-router-dom';
 
 const useDependencies = () => {
 	const { setSessionStore, clearSession } = useSessionHandler();
 	const { handleMutation } = useApiHandler();
 	//const { setErrorNotificaiton } = useNotificationHandler();
-	//const navigate = useNavigate();
+	const navigate = useNavigate();
 
 	const initialValues = {
 		username: '',
@@ -47,7 +49,7 @@ const useDependencies = () => {
 		} else {
 			const response = result as AuthenticationResponse;
 			setSessionStore({ ...response });
-			//	navigate('/');
+			navigate('/');
 		}
 	};
 	const handleCancel = () => {
